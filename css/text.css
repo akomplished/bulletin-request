@@ -1,0 +1,89 @@
+body {
+  font: 13px / 1.5 "Helvetica Neue", Arial, "Liberation Sans", FreeSans, sans-serif;
+}
+
+pre,
+code {
+  font-family: "DejaVu Sans Mono", Monaco, Consolas, monospace;
+}
+
+hr {
+  border: 0 #ccc solid;
+  border-top-width: 1px;
+  clear: both;
+  height: 0;
+}
+
+h1 {
+  font-size: 25px;
+}
+
+h2 {
+  font-size: 23px;
+}
+
+h3 {
+  font-size: 21px;
+}
+
+h4 {
+  font-size: 19px;
+}
+
+h5 {
+  font-size: 17px;
+}
+
+h6 {
+  font-size: 15px;
+}
+
+ol {
+  list-style: decimal;
+}
+
+ul {
+  list-style: disc;
+}
+
+li {
+  margin-left: 30px;
+}
+
+p,
+dl,
+hr,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+ol,
+ul,
+pre,
+table,
+address,
+fieldset,
+figure {
+  margin-bottom: 20px;
+}
+
+        .ui-button {
+            padding: .4em 12px .4em 10px;
+            text-decoration: none;
+            position: relative;
+        }
+
+                .ui-datepicker-today a.ui-state-highlight {
+            border: 1px solid #6d9668;
+            background: #9BBA9C url("../images/ui-bg_diagonals-thick_10_1d551d_40x40.png") repeat-x scroll 50% 50%;
+            color: #363636;
+        }
+
+        .ui-datepicker-today .ui-datepicker-current-day a.ui-state-highlight {
+            border: 1px solid #1D551D;
+            background: #9BBA9C url("../images/ui-bg_diagonals-thick_10_1d551d_40x40.png") repeat-x scroll 50% 50%;
+            font-weight: bold;
+            color: #2B2B2B;
+        }

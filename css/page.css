@@ -1,0 +1,79 @@
+﻿.container {
+    position: relative;
+    background-color: #ededed;
+}
+
+.row-display td:nth-child(1) {
+    text-align: center;
+    width: 20px;
+}
+.row-display td:nth-child(2) {
+    text-align: center;
+    width: 20px;
+}
+.row-display td:nth-child(3) {
+    text-align: center;
+    width: 20px;
+}
+.row-display td:nth-child(4) {
+    text-align: center;
+    width: 20px;
+}
+.row-display td:nth-child(5) {
+    text-align: center;
+    width: 20px;
+}
+.row-display td:nth-child(6) {
+    text-align: left;
+    width: 20px;
+}
+
+@media (min-width: 200px) {
+    .slideout-menu {
+        left: -250px;
+		width: 250px;
+    }
+}
+
+@media (min-width: 400px) {
+    .slideout-menu {
+        left: -450px;
+	    width: 250px;
+    }
+}
+
+/* Larger than phablet (also point when grid becomes active) */
+@media (min-width: 550px) {
+    .slideout-menu {
+    left: -550px;
+	width: 250px;
+    }
+}
+
+/* Larger than tablet */
+@media (min-width: 750px) {
+        .slideout-menu {
+    left: -750px;
+	width: 250px;
+    }
+}
+
+/* Larger than desktop */
+@media (min-width: 1000px) {
+            .slideout-menu {
+    left: -1000px;
+	width: 250px;
+    }
+}
+
+
+/* Larger than Desktop HD */
+@media (min-width: 1200px) {
+            .slideout-menu {
+    left: -9999px;
+	width: 250px;
+    }
+}
+
+
+	
