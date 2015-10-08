@@ -51,7 +51,7 @@
         var blocker = '<div id="blocker" class="ui-widget-overlay" style="display: none;"></div>';
         var container = '<div id="container" class="ui-draggable ui-corner-all ui-widget-header" style="text-align: center; z-index: 1000; position: absolute; margin-left: -147px; left: 50%; top: 35%; width: 320px; display: none; font-size: 12px; border: 1px solid rgb(128, 128, 128);">';
         container += '<div style="margin: 5%;"><center>';
-        container += '<img style="display: block; margin-top: 8px;" class="ui-corner-all ui-widget-content ui-widget" src="../images/gears-animation1.gif"></center>';
+        container += '<img style="display: block; margin-top: 8px;" class="ui-corner-all ui-widget-content ui-widget" src="images/gears-animation1.gif"></center>';
         container += '<p>Please wait while we process your request.</p>';
         container += '<div style="text-align: center">';
         container += '<button id="close-container" class="ui-button ui-state-default ui-corner-all" style="display: none;">Close</button>';
