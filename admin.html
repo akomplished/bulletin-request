@@ -20,6 +20,7 @@
     <link href="css/responsive-style.css" rel="stylesheet" />
     <link href="css/normalize.css" rel="stylesheet" />
     <link href="css/text.css" rel="stylesheet" />
+    <link href="css/page.css" rel="stylesheet" />
     <style>
         .event-table {
             margin: 0px;
@@ -131,6 +132,23 @@
             padding: 10px 0.2em;
         }
 
+        h5.ui-widget-header .fa {
+            font-family: "FontAwesome";            
+            margin-top: 0.1em;
+            margin-right: 10px;
+            float: right;
+            padding: 0.2em 0.3em;
+            background-color: transparent;
+            border: 1px solid transparent;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        h5.ui-widget-header .fa:hover {
+            border: 1px solid rgb(149, 149, 149);
+            background-color: rgba(41, 41, 41, 0.10);
+        }
+
         textarea {
             resize: none;
         }
@@ -145,11 +163,6 @@
 
             .row-details.collapsed {
                 display: none;
-            }
-
-            .row-details ul {
-                margin: 0;
-                list-style: none;
             }
 
             .row-details label {
@@ -171,41 +184,12 @@
             border: 1px solid #559a55;
         }
 
-        .inline-input-container {
-            display: block;
-            width: 100%;
-            margin-bottom: 7px;
-        }
-
-            .inline-input-container > div {
-                display: inline-block;
-                text-align: left;
-            }
-
-
         .label-span-before {
             font-weight: bold;
         }
 
         .ui-datepicker-calendar > tbody:nth-child(2) {
             font-size: 12px;
-        }
-
-        .ui-datepicker .ui-datepicker-calendar .ui-state-highlight a {
-            border: 1px solid #26371f;
-            background: #1d551d url("images/ui-bg_highlight-hard_25_1d551d_1x100.png") 50% 50% repeat-x;
-            font-weight: bold;
-            color: #ffffff;
-        }
-
-        .hasDatepicker {
-            background: transparent url('images/32calicon.png') no-repeat;
-            background-position: right center;
-            background-size: contain;
-            background-origin: padding-box;
-            content: ' ';
-            display: inline-block;
-            position: relative;
         }
 
         td.ui-state-active {
@@ -215,9 +199,14 @@
     <script type="text/javascript">
         $(document).ready(function () {
             onLoadAuthJS();
-            $("#tabs").tabs();
+            $("#tabs").tabs({
+                collapsible: true
+            });
 
             $("#btn-submit").click(function () {
+                $("button").attr("disabled", "disabled");
+                $.blockUI({ message: $('#container'), css: { width: '318px' } });
+                event.preventDefault();
                 if ($("input[name='selected']:checked").length > 0) {
                     var rowArray = $("input[name='selected']:checked").map(function () {
                         return parseInt($(this).val(), 10);
@@ -230,9 +219,15 @@
                             Status: 'Approved'
                         }
                     };
-                    console.log(data);
+                    setTimeout('$("button").removeAttr("disabled")', 2000);
+                    postFormData(data, onVisualLoad);
+                } else {
+                    $("button").removeAttr("disabled");
+                    alert('Error: No selections have been made.'); 
+                    return false;
                 }
-               postFormData(data);
+
+                
             });
         });
     </script>
@@ -258,7 +253,7 @@
                         <p>These will be the approved requests</p>
                     </div>
                     <div id="tabs-archived" style="overflow: hidden; position: static; margin: 0px 2px; padding-top: 10px; padding-right: 0px; padding-left: 0px;" class="block rows">
-                        <p>These will be past approved or declined requests</p>
+                        <p>These will be past approved or declined requests.</p>
                     </div>
                 </div>
             </div>

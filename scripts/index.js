@@ -48,8 +48,8 @@
     };
 
     window.buildObjects = function () {
-        var blocker = '<div id="blocker" class="ui-widget-overlay" style="display: none;"></div>';
-        var container = '<div id="container" class="ui-draggable ui-corner-all ui-widget-header" style="text-align: center; z-index: 1000; position: absolute; margin-left: -147px; left: 50%; top: 35%; width: 320px; display: none; font-size: 12px; border: 1px solid rgb(128, 128, 128);">';
+        var container = '<div id="container" class="ui-widget-header" style="text-align: center; display: none; font-size: 12px; border: 1px solid rgb(128, 128, 128);">';
+        container += '<h5> </h5>';
         container += '<div style="margin: 5%;"><center>';
         container += '<img style="display: block; margin-top: 8px;" class="ui-corner-all ui-widget-content ui-widget" src="images/gears-animation1.gif"></center>';
         container += '<p>Please wait while we process your request.</p>';
@@ -58,12 +58,11 @@
         container += '</div></div></div>';
         var growl = '<div class="growlUI" style="display: none; cursor: default;"></div>';
 
-        $("body").append(blocker);
         $("body").append(container);
         $("body").append(growl);
     }
 
-    window.postFormData = function (data) {
+    window.postFormData = function (data, callback) {
         var scriptId = 'MX4ev5IFFXUd7DRHOn8f7c2uZymsaB7IG';
         var payload = {
             'function': data.function,
@@ -81,21 +80,20 @@
 
         req.execute(function (res) {
             $("div#container").on("click", "#close-container", function () {
-                $("#container").remove();
-                $("#blocker").remove();
-                buildObjects;
+                $.unblockUI();
+                return callback();
             });
             if (res.error) {
-                $("div#container").prepend("<h5>Error</h5>");
-                $("div#container p").text("The following error occured while processing your request:  \n" + json.error);
+                $("div#container h5").text("Error");
+                $("div#container p").val("The following error occured while processing your request:  \n" + json.error);
             } else {
                 var json = $.parseJSON(res.response.result);
                 if (!json.hasError) {
-                    $("div#container").prepend("<h5>Success!</h5>");
-                    $("div#container p").text("Your Bulletin Request was Successfully submitted.");
+                    $("div#container h5").text("Success!");
+                    $("div#container p").val("Your request was processed Successfully.");
                 } else {
-                    $("div#container").prepend("<h5>Error</h5>");
-                    $("div#container p").text("The following error occured while processing your request:  \n" + json.message);
+                    $("div#container h5").text("Error");
+                    $("div#container p").val("The following error occured while processing your request:  \n" + json.message);
                 }
             }
             $("div#container button").show();

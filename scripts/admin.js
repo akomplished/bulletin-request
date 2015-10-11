@@ -1,9 +1,15 @@
-﻿(function () {
+﻿/*
+-Add $.growl for updated item complete.
+-Repull google viz pending 
+-Allow collapseable tabs
+*/
+
+(function () {
     window.onLoadAuthJS = function () {
         google.load("visualization", "1", { "callback": onVisualLoad });
     };
 
-    onVisualLoad = function () {
+    window.onVisualLoad = function () {
         var querystring = encodeURIComponent('select A, B, C, D, E, F, G, H, I, J, K, L where L = "Pending"');
         var request = new google.visualization.Query('https://docs.google.com/a/mrpkedu.org/spreadsheets/d/1Df0VVPUabFqqMHJ96NUvEv0AI6mFtCzgeSb2VAiIFHM/gviz/tq?sheet=NewRequests&tq=' + querystring);
         console.log(querystring);
@@ -45,7 +51,7 @@
     function fillTable(groups, callback) {
         var html = "";
         for (var group in groups) {
-            var table = "<h5 class='ui-widget-header' style='margin: 0.2em 0 0 0; padding: 0.2em 0 0.2em 0.5em'>" + group + "</h5>";
+            var table = "<h5 class='ui-widget-header ui-corner-top' style='margin: 0.2em 0 0 0; padding: 0.2em 0 0.2em 0.5em'>" + group + "<i class='fa fa-minus-square-o'></i></h5>";
             table += "<table class=\"tblgroup\" cellspacing=\"0\" style=\"border-spacing: 0;\"><thead><tr>";
             table += "<th><input type='checkbox' name='selectall' id='input-selectall' onchange='checkall(this)' /></th>"
             table += "<th>TimeStamp</th>";
@@ -100,24 +106,41 @@
 
 
     var loadHtml = function (html) {
+        $("#tabs-pending div").empty();
         $("#tabs-pending div").html(html);
+
         $(".row-details .rundates").multiDatesPicker({
             dateFormat: 'mm/dd/yy',
             minDate: $.datepicker.formatDate('mm/dd/yy', new Date()),
             beforeShowDay: $.datepicker.noWeekends,
         });
+
+        $("h5.ui-widget-header .fa").click(function () {
+            var tbl = $(this).parent().next('.tblgroup');
+            $(this).toggleClass('fa-minus-square-o fa-plus-square-o');
+            
+            if ($(this).is('.fa-minus-square-o')) {
+                $(tbl).show('blind', 'fast', function () {
+                    $(this).find('.ui-state-hover').removeClass('ui-state-hover');
+                });
+            } else if ($(this).is('.fa-plus-square-o')) {
+                $(tbl).hide('blind', 'fast', function () {
+                    $(this).find('.ui-state-hover').removeClass('ui-state-hover');
+                });
+            }
+        })
+
         $(".row-display").children('td').hover(function () {
             $(this).parent('tr').toggleClass('on-hover');
         });
         createDatePicker();
 
         $("form").on('submit', function (event) {
+            event.preventDefault();
             $("button").attr("disabled", "disabled");
-            $('#container').show();
+            $.blockUI({ message: $('#container'), css: { width: '318px' } });
             var formId = $(this).attr("id");
             if (document.forms[formId].checkValidity()) {
-                console.log(formId);
-                event.preventDefault();
                 var data = {
                     function: 'updateRequest',
                     payload: {
@@ -140,9 +163,9 @@
                     }
                 });
                 setTimeout('$("button").removeAttr("disabled")', 2000);
-                postFormData(data);
+                postFormData(data, onVisualLoad);
             } else {
-                event.preventDefault();
+                $("button").removeAttr("disabled");
                 return false;
             }
         });
@@ -169,19 +192,15 @@
     };
 
     function createDatePicker() {
-        try {
-            $(".eventdates").datepicker({
-                dateFormat: 'mm/dd/yy',
-                beforeShowDay: $.datepicker.noWeekends,
-            });
-            $(".rundates").multiDatesPicker({
-                dateFormat: 'mm/dd/yy',
-                minDate: $.datepicker.formatDate('mm/dd/yy', new Date()),
-                beforeShowDay: $.datepicker.noWeekends,
-            });
-        } catch (ex) {
-            console.log(ex.message);
-        }
+        $(".eventdates").datepicker({
+            dateFormat: 'mm/dd/yy',
+            beforeShowDay: $.datepicker.noWeekends,
+        });
+        $(".rundates").multiDatesPicker({
+            dateFormat: 'mm/dd/yy',
+            minDate: $.datepicker.formatDate('mm/dd/yy', new Date()),
+            beforeShowDay: $.datepicker.noWeekends,
+        });
     }
 
     function convertDate(input) {

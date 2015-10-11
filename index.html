@@ -14,22 +14,24 @@
     <script type="text/javascript" src="scripts/jquery-ui.multidatespicker.js"></script>
     <script type="text/javascript" src="scripts/index.js"></script>
     <script type="text/javascript" src="https://apis.google.com/js/client.js?onload=googleapisService" defer async></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.66.0-2013.10.09/jquery.blockUI.min.js"></script>
     <link href="css/responsive-style.css" rel="stylesheet" />
     <link href="css/normalize.css" rel="stylesheet" />
     <link href="css/text.css" rel="stylesheet" />
+    <link href="css/page.css" rel="stylesheet" />
     <script type="text/javascript">
         $(document).ready(function () {
-            var date = new Date().toLocaleDateString('en-US');
+            var date = new Date().toDateString().split('-').join('/');
             $('.multiple').multiDatesPicker({ beforeShowDay: $.datepicker.noWeekends });
             $('input[name="EventDate"]').datepicker({ beforeShowDay: $.datepicker.noWeekends });
-            $('input[name="SubmitDate"]').val(date);
+            $('input[name="SubmitDate"]').val(new Date(date));
 
             $('#cal-rundates').multiDatesPicker({
                 altField: '#input-rundates',
                 beforeShowDay: $.datepicker.noWeekends,
                 numberOfMonths: 3,
                 showButtonPanel: false,
-                minDate: date
+                minDate: $.datepicker.formatDate('mm/dd/yy', new Date(date))
             });
 
             if ($(window).width() <= 500) {
@@ -59,12 +61,10 @@
             $('select').selectmenu();
 
             $("form").on('submit', function (event) {
-                $('#blocker').show();
-                $('#container').show();
-                
+                $("button").attr("disabled", "disabled");
+                $.blockUI({ message: $('#container'), css: { width: '318px' } });
+                event.preventDefault();
                 if (document.forms[0].checkValidity()) {
-                    event.preventDefault();
-                    $("#container").show();
                     var data = {
                         function: 'handleRequest',
                         payload: {}
@@ -83,13 +83,23 @@
                             }
                         }
                     });
-                    postFormData(data);
+                    setTimeout('$("button").removeAttr("disabled")', 2000);
+                    postFormData(data, resetForm);
                 } else {
-                    event.preventDefault();
+                    $("button").removeAttr("disabled");
                     return false;
                 }
             });
         });
+
+        var resetForm = function () {
+            $(':input', 'form')
+             .not(':button, :submit, :reset')
+             .val('')
+             .removeAttr('checked')
+             .removeAttr('selected');
+            $('.hasDatepicker').multiDatesPicker("resetDates","picked");
+        }
 
     </script>
     <style>
@@ -244,17 +254,14 @@
                             <div class="inline-input-container">
                                 <div onclick="$('#input-eventdate').focus();">
                                     <label>Event Date: </label>
-                                    <div>
                                         <input type="text" name="EventDate" value="" class="eq-tb-date" id="input-eventdate" readonly pattern="(0?[1-9]|[12]\d|3[01])[/\-](0?[0-9]|1?[0-9]|2?[0-9]|3?[0-1])[/\-](2014|20)\d\d" required />
-                                        <img style="float: right; position: relative; top: -2px; right: -4px;" src="images/32calicon.png" />
-                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="grid-30 prefix-65 suffix-5" style="margin-bottom: 20px;">
                         <button id="form-submit" class="ui-button ui-state-default ui-corner-all">Submit</button>
-                        <button id="form-reset" class="ui-button ui-state-default ui-corner-all" onclick="event.preventDefault(); window.location.reload();">Reset</button>
+                        <button id="form-reset" class="ui-button ui-state-default ui-corner-all" onclick="event.preventDefault(); resetFormCallback();">Reset</button>
                     </div>
                 </div>
                 <input type="hidden" name="Status" id="input-status" value="Pending" />
