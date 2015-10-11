@@ -6,53 +6,85 @@
 
 (function () {
     window.onLoadAuthJS = function () {
-        google.load("visualization", "1", { "callback": onVisualLoad });
+        google.load("visualization", "1", { "callback": getPending });
     };
 
-    window.onVisualLoad = function () {
+    window.getPending = function () {
         var querystring = encodeURIComponent('select A, B, C, D, E, F, G, H, I, J, K, L where L = "Pending"');
         var request = new google.visualization.Query('https://docs.google.com/a/mrpkedu.org/spreadsheets/d/1Df0VVPUabFqqMHJ96NUvEv0AI6mFtCzgeSb2VAiIFHM/gviz/tq?sheet=NewRequests&tq=' + querystring);
-        console.log(querystring);
-        request.send(handleRequest);
+
+        request.send(function (response) {
+            handleRequest(response, fillPending, loadPendingTab);
+        })
     };
 
-    var handleRequest = function (response) {
-        var objs = [];
-        var result = $.parseJSON(response.getDataTable().toJSON());
+    window.getApproved = function () {
+        var querystring = encodeURIComponent('select A, B, C, D, E, F, G, H, I, J, K, L where L = "Approved"');
+        var request = new google.visualization.Query('https://docs.google.com/a/mrpkedu.org/spreadsheets/d/1Df0VVPUabFqqMHJ96NUvEv0AI6mFtCzgeSb2VAiIFHM/gviz/tq?sheet=NewRequests&tq=' + querystring);
 
+        request.send(function (response) {
+            handleRequest(response, fillApproved, loadApprovedTab);
+        })
+    }
+
+    function handleRequest (response, callback1, callback2) {
+        var result = $.parseJSON(response.getDataTable().toJSON());
+        var groups = {};
         for (var i = 0; i < result.rows.length; i++) {
             var obj = {};
             for (var o in result.cols) {
-                if (result.cols[o].type == 'datetime')
-                    obj[result.cols[o].label] = result.rows[i].c[o].f;
-                else if (result.cols[o].type == 'date')
-                    obj[result.cols[o].label] = result.rows[i].c[o].f;
-                else
-                    obj[result.cols[o].label] = result.rows[i].c[o].v;
-            }
-            objs.push(obj);
-        }
+                if (result.rows[i].c[o] !== null) {
+                    if (result.cols[o].type == 'datetime' || result.cols[o].type == 'date')
+                        obj[result.cols[o].label] = result.rows[i].c[o].f;
 
-        var groups = {};
-        for (var item in objs) {
-            var group = objs[item].Category;
-            if (!(group in groups)) {
-                var counter = 1;
-                groups[group] = {
-                    event: [objs[item]]
+                    else
+                        obj[result.cols[o].label] = result.rows[i].c[o].v;
+                } else {
+                    obj[result.cols[o].label] = "";
+                }
+            }
+            if (!(obj.Category in groups)) {
+                groups[obj.Category] = {
+                    event: [obj]
                 };
             } else {
-                groups[group].event.push(objs[item]);
+                groups[obj.Category].event.push(obj);
             }
         }
-        fillTable(groups, loadHtml);
+        callback1(groups, callback2);
+        //fillTable(groups, loadHtml);
     };
 
-    function fillTable(groups, callback) {
+    function fillApproved(groups, callback) { 
         var html = "";
         for (var group in groups) {
             var table = "<h5 class='ui-widget-header ui-corner-top' style='margin: 0.2em 0 0 0; padding: 0.2em 0 0.2em 0.5em'>" + group + "<i class='fa fa-minus-square-o'></i></h5>";
-            table += "<table class=\"tblgroup\" cellspacing=\"0\" style=\"border-spacing: 0;\"><thead><tr>";
+            table += "<table class=\"tblgroup approved\" cellspacing=\"0\" style=\"border-spacing: 0;\"><thead><tr>";
+            table += "<th>Submit Date</th>";
+            table += "<th>Submitted By</th>";
+            table += "<th>Organization</th>";
+            table += "<th>Run Dates</th>";
+            table += "<th>Message</th>";
+            table += "</tr></thead><tbody>";
+            for (var i = 0; i < groups[group].event.length; i++) {
+                table += "<tr class='row-display' data-row='" + groups[group].event[i].Row + "'>";
+                table += "<td>" + convertDate(groups[group].event[i].TimeStamp) + "</td>";
+                table += "<td>" + groups[group].event[i].SubmittedBy + "</td>";
+                table += "<td>" + groups[group].event[i].Organization + "</td>";
+                table += "<td id='rundates'>" + groups[group].event[i].RunDates + "</td>";
+                table += "<td>" + groups[group].event[i].Message + "</td></tr>";
+            }
+            table += "</tbody></table>"
+            html += table;
+        }
+        callback(html);
+    }
+
+    var fillPending = function(groups, callback) {
+        var html = "";
+        for (var group in groups) {
+            var table = "<h5 class='ui-widget-header ui-corner-top' style='margin: 0.2em 0 0 0; padding: 0.2em 0 0.2em 0.5em'>" + group + "<i class='fa fa-minus-square-o'></i></h5>";
+            table += "<table class=\"tblgroup pending\" cellspacing=\"0\" style=\"border-spacing: 0;\"><thead><tr>";
             table += "<th><input type='checkbox' name='selectall' id='input-selectall' onchange='checkall(this)' /></th>"
             table += "<th>TimeStamp</th>";
             table += "<th>Submitted By</th>";
@@ -97,15 +129,14 @@
         }
         callback(html);
     }
-    
-    function selectCatagory(tar, opt) {
-        $(tar + 'option').each(function (a, b) {
-            console.log(b);
-        });
+
+    var loadApprovedTab = function (html) {
+        $("#tabs-approved div").empty();
+        $("#tabs-approved div").html(html);
+        uiFunctions();
     }
-
-
-    var loadHtml = function (html) {
+   
+    var loadPendingTab = function (html) {
         $("#tabs-pending div").empty();
         $("#tabs-pending div").html(html);
 
@@ -114,25 +145,7 @@
             minDate: $.datepicker.formatDate('mm/dd/yy', new Date()),
             beforeShowDay: $.datepicker.noWeekends,
         });
-
-        $("h5.ui-widget-header .fa").click(function () {
-            var tbl = $(this).parent().next('.tblgroup');
-            $(this).toggleClass('fa-minus-square-o fa-plus-square-o');
-            
-            if ($(this).is('.fa-minus-square-o')) {
-                $(tbl).show('blind', 'fast', function () {
-                    $(this).find('.ui-state-hover').removeClass('ui-state-hover');
-                });
-            } else if ($(this).is('.fa-plus-square-o')) {
-                $(tbl).hide('blind', 'fast', function () {
-                    $(this).find('.ui-state-hover').removeClass('ui-state-hover');
-                });
-            }
-        })
-
-        $(".row-display").children('td').hover(function () {
-            $(this).parent('tr').toggleClass('on-hover');
-        });
+        uiFunctions();
         createDatePicker();
 
         $("form").on('submit', function (event) {
@@ -163,7 +176,7 @@
                     }
                 });
                 setTimeout('$("button").removeAttr("disabled")', 2000);
-                postFormData(data, onVisualLoad);
+                postFormData(data, getPending);
             } else {
                 $("button").removeAttr("disabled");
                 return false;
@@ -190,6 +203,27 @@
             $(_this).children("td").addClass("ui-state-active");
         });
     };
+
+    function uiFunctions() {
+        $("h5.ui-widget-header .fa").click(function () {
+            var tbl = $(this).parent().next('.tblgroup');
+            $(this).toggleClass('fa-minus-square-o fa-plus-square-o');
+
+            if ($(this).is('.fa-minus-square-o')) {
+                $(tbl).show('blind', 'fast', function () {
+                    $(this).find('.ui-state-hover').removeClass('ui-state-hover');
+                });
+            } else if ($(this).is('.fa-plus-square-o')) {
+                $(tbl).hide('blind', 'fast', function () {
+                    $(this).find('.ui-state-hover').removeClass('ui-state-hover');
+                });
+            }
+        })
+
+        $(".row-display").children('td').hover(function () {
+            $(this).parent('tr').toggleClass('on-hover');
+        });
+    }
 
     function createDatePicker() {
         $(".eventdates").datepicker({
