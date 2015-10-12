@@ -89,16 +89,24 @@
                         }
 
                         .event-table .tblgroup tbody tr.row-display:not(.row-details) td {
-                            vertical-align: middle;
+                            
                             background-color: rgb(254,254,254);
                             border: 1px solid rgb(192,192,192);
                             border-width: 1px 1px 1px 1px;
-                            text-align: left;
-                            padding: 7px;
                             font-size: 12px;
                             font-family: Arial;
                         }
 
+                        .event-table .tblgroup tbody tr.row-display:not(.row-details) td:not(:first-child) {
+                            padding: 7px;
+                            vertical-align: top;
+                        }
+
+                        .event-table .tblgroup tbody tr.row-display:not(.row-details) td:first-child {
+                            padding: 12px 7px 7px 6px;
+                            vertical-align: middle;
+                           
+                        }
 
                         /*
                         .event-table .tblgroup tbody tr.row-display:not(.row-details):last-child td:first-child {

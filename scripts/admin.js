@@ -83,7 +83,7 @@
         var html = "";
         for (var group in groups) {
             var table = "<h5 class='ui-widget-header ui-corner-top' style='margin: 0.2em 0 0 0; padding: 0.2em 0 0.2em 0.5em'>" + group + "<i class='fa fa-minus-square-o'></i></h5>";
-            table += "<table class=\"tblgroup pending\" cellspacing=\"0\" style=\"border-spacing: 0;\"><thead><tr>";
+            table += "<table class=\"tblgroup pending\" cellspacing=\"0\" cellpadding=\"0\" style=\"border-spacing: 0;\"><thead><tr>";
             table += "<th><input type='checkbox' name='selectall' id='input-selectall' onchange='checkall(this)' /></th>"
             table += "<th>TimeStamp</th>";
             table += "<th>Submitted By</th>";
@@ -247,6 +247,8 @@
         var da = new Date(y, mon, d, h, min).toLocaleDateString('en-US');
         return da;
     }
+
+
 
     Date.prototype.addMonth = function (month) {
         var dat = new Date(this.valueOf());

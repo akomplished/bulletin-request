@@ -9,7 +9,7 @@
         pClaim.aud = "https://www.googleapis.com/oauth2/v3/token";
         pClaim.iss = "1075942469255-rahtil667s666gbdkg3d24ndp749eojc@developer.gserviceaccount.com";
         pClaim.sub = "mdavis@mrpkedu.org";
-        pClaim.scope = "https://www.googleapis.com/auth/script.send_mail https://www.googleapis.com/auth/script.storage https://www.googleapis.com/auth/spreadsheets";
+        pClaim.scope = "https://www.googleapis.com/auth/script.send_mail https://www.googleapis.com/auth/script.storage https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/documents";
         pClaim.exp = KJUR.jws.IntDate.get("now + 1hour");
         pClaim.iat = KJUR.jws.IntDate.get("now");
 
@@ -33,7 +33,7 @@
 
             gapi.auth.authorize({
                 client_id: '1075942469255-2tlk0uhhpemjl4g4mstj789pu7f2ql9u.apps.googleusercontent.com',
-                scope: "https://www.googleapis.com/auth/script.send_mail https://www.googleapis.com/auth/script.storage https://www.googleapis.com/auth/spreadsheets",
+                scope: "https://www.googleapis.com/auth/script.send_mail https://www.googleapis.com/auth/script.storage https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/documents",
                 immediate: true
             }, buildObjects);
         });
@@ -85,6 +85,7 @@
             if (res.error) {
                 $("div#container h5").text("Error");
                 $("div#container p").val("The following error occured while processing your request:  \n" + json.error);
+                $("div#container button").show();
             } else {
                 var json = $.parseJSON(res.response.result);
                 if (!json.hasError) {
