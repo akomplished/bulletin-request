@@ -112,10 +112,6 @@
             position: relative;
         }
 
-        label {
-            display: block;
-        }
-
         .mep {
             position: absolute;
             right: 30%;
@@ -131,11 +127,6 @@
             display: none;
         }
 
-        p {
-            margin-top: 7px;
-            margin-bottom: 7px;
-        }
-
         select {
             width: 100%;
         }
@@ -145,8 +136,9 @@
         }
 
         #cal-rundates {
-            margin-left: auto;
-            margin-right: auto;
+            margin-left: 3%; 
+            margin-right: 3%; 
+            width: 94%;
         }
 
         .ui-buttonset .ui-button {
@@ -175,16 +167,8 @@
         label {
             padding: 0.4em 2em 0.4em 0;
             font-weight: bold;
+            display: block;
         }
-
-        #blocker {
-            z-index: 1;
-        }
-
-        input#input-date-submitted {
-            background-color: rgb(195, 195, 195);
-        }
-
      </style>
 </head>
 <body>
@@ -218,7 +202,7 @@
                         </div>
                         <div class="grid-100">
                             <center>
-                                <div id="cal-rundates" class="ui-corner-all" style="margin-left: 3%; margin-right: 3%; width: 94%"></div>
+                                <div id="cal-rundates" class="ui-corner-all" style=""></div>
                                 <input type="hidden" id="input-rundates" name="RunDates" required />
                             </center>
                         </div>

@@ -70,7 +70,7 @@
                 table += "<td>" + convertDate(groups[group].event[i].TimeStamp) + "</td>";
                 table += "<td>" + groups[group].event[i].SubmittedBy + "</td>";
                 table += "<td>" + groups[group].event[i].Organization + "</td>";
-                table += "<td id='rundates'>" + groups[group].event[i].RunDates + "</td>";
+                table += "<td id='rundates' style='overflow: hidden; white-space: nowrap;' title='" + groups[group].event[i].RunDates + "'>" + groups[group].event[i].RunDates + "</td>";
                 table += "<td>" + groups[group].event[i].Message + "</td></tr>";
             }
             table += "</tbody></table>"
@@ -97,7 +97,7 @@
                 table += "<td>" + convertDate(groups[group].event[i].TimeStamp) + "</td>";
                 table += "<td>" + groups[group].event[i].SubmittedBy + "</td>";
                 table += "<td>" + groups[group].event[i].Organization + "</td>";
-                table += "<td id='rundates'>" + groups[group].event[i].RunDates + "</td>";
+                table += "<td id='rundates' style='overflow: hidden; white-space: nowrap;' title='" + groups[group].event[i].RunDates + "'>" + groups[group].event[i].RunDates + "</td>";
                 table += "<td>" + groups[group].event[i].Message + "</td></tr>";
                 table += "<tr class='row-details collapsed'><td colspan='6' style='background-color: rgba(155, 186, 156, 0.2); border: 1px solid #D1D1D1; padding: 10px 0 10px 0; '>";
                 table += "<div class='grid-parent'>"
@@ -215,11 +215,15 @@
                     $(this).find('.ui-state-hover').removeClass('ui-state-hover');
                 });
             }
-        })
+        });
 
         $(".event-table .tblgroup tbody tr.row-display:not(.row-details)").hover(function () {
             $(this).children("td").toggleClass("ui-state-hover");
-        })
+        });
+
+        $(".ui-button").hover(function () {
+            $(this).toggleClass("ui-state-hover");
+        });
     }
 
     function createDatePicker() {
