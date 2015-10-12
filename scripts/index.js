@@ -80,8 +80,7 @@
 
         req.execute(function (res) {
             $("div#container").on("click", "#close-container", function () {
-                $.unblockUI();
-                return callback();
+                $.unblockUI({ onUnblock: callback });
             });
             if (res.error) {
                 $("div#container h5").text("Error");

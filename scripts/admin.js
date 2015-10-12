@@ -36,7 +36,6 @@
                 if (result.rows[i].c[o] !== null) {
                     if (result.cols[o].type == 'datetime' || result.cols[o].type == 'date')
                         obj[result.cols[o].label] = result.rows[i].c[o].f;
-
                     else
                         obj[result.cols[o].label] = result.rows[i].c[o].v;
                 } else {
@@ -183,9 +182,7 @@
             }
         });
 
-        $(".event-table .tblgroup tbody tr.row-display:not(.row-details) td").hover(function () {
-            $(this).parent().children().toggleClass("ui-state-hover");
-        })
+
 
         $(".row-display td:not(:first-child)").click(function (e) {
             var row = $(this).parent('tr').data('row');
@@ -220,9 +217,9 @@
             }
         })
 
-        $(".row-display").children('td').hover(function () {
-            $(this).parent('tr').toggleClass('on-hover');
-        });
+        $(".event-table .tblgroup tbody tr.row-display:not(.row-details)").hover(function () {
+            $(this).children("td").toggleClass("ui-state-hover");
+        })
     }
 
     function createDatePicker() {

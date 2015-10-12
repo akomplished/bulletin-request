@@ -20,6 +20,10 @@ input.hasDatepicker {
     color: #ffffff;
 }
 
+input:not(.select-every), textarea {
+    width: 100%;
+}
+
 @media (min-width: 200px) {
     .slideout-menu {
         left: -250px;
